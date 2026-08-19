@@ -20,7 +20,10 @@
 ### 2026-08-19 - Static validation
 
 - Goal: validate reproducible examples without account access.
-- Actions: `bash -n deploy/scripts/*.sh`, Compose `config`, JSON/schema parsing, and changed-file secret scan.
-- Result: record actual results in `TEST_MATRIX.md`; any unavailable tool must have a documented static substitute.
+- Actions: created a Git bundle, cloned it under BWG `/tmp/embykeeper-deploy-verify-20260819-02`, then ran Bash syntax checks, both Compose `config --quiet` checks, Python compilation, JSON/schema checks, exporter positive/negative tests, healthcheck, and secret scan. No container was started.
+- Result: all available checks passed. The host lacked the third-party Python `jsonschema` package, so an equivalent standard-library validator loaded the tracked schema and enforced exact fields, patterns, types, and minimums.
+- Debug: the first shell exporter test rejected a legal empty `last_error` because `grep` receives no line for empty input. The exporter now handles empty values explicitly and validates timestamps and counters before emitting JSON; all regression checks then passed.
+- EmbyProxy cross-check: the split feature bundle was cloned under BWG `/tmp/embyproxy-embykeeper-split-verify-20260819-02`. Full `go test ./...`, `go vet ./...`, and focused Admin/config Embykeeper tests passed using the existing temporary Linux Go SDK. Windows vet was not treated as authoritative because existing Linux-only syscall uses cannot compile on Windows.
+- Security: scans covered forbidden tracked paths, private-key headers, common high-entropy credential shapes, complete UUIDs, and non-placeholder Emby URLs. Both repositories reported zero findings.
 - Next: owner review, then decide whether to create a private remote.
-- External help: only required for a future authenticated push.
+- External help: only required to select and authorize a future private remote; push remains prohibited.
