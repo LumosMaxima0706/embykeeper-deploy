@@ -21,9 +21,10 @@ the profile disabled. Review the upstream image tag and digest. Validate with:
 docker compose -f docker-compose.example.yml config
 ```
 
-The baseline uses `--emby`, no host network, no published port, and no Docker
-socket. Starting a container is an owner-approved isolated trial, not part of
-repository tests.
+The baseline uses `--emby` and `--disable-color`, no host network, no published
+port, and no Docker socket. The command intentionally avoids flags that are
+not present in every pinned upstream image release. Starting a container is an
+owner-approved isolated trial, not part of repository tests.
 
 ## systemd alternative
 

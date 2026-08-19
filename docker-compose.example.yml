@@ -7,7 +7,6 @@ services:
     command:
       - /run/embykeeper-secrets/config.toml
       - --emby
-      - --no-top
       - --disable-color
     volumes:
       - ./secrets/config.toml:/run/embykeeper-secrets/config.toml:ro

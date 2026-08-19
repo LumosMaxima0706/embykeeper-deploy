@@ -27,3 +27,14 @@
 - Security: scans covered forbidden tracked paths, private-key headers, common high-entropy credential shapes, complete UUIDs, and non-placeholder Emby URLs. Both repositories reported zero findings.
 - Next: owner review, then decide whether to create a private remote.
 - External help: only required to select and authorize a future private remote; push remains prohibited.
+
+### 2026-08-19 - BWG isolated runtime bring-up
+
+- Goal: start the standalone Embykeeper process without real account or Telegram credentials.
+- Baseline: `/opt/embykeeper` was absent; no Embykeeper container or systemd unit existed. Existing EmbyProxy, Nginx, sidecar, and publication-agent services were left untouched.
+- Actions: pulled `embykeeper/embykeeper:v7.6.1` (digest recorded only in the host audit), rendered the Compose file, and started the dedicated stack with the disabled placeholder profile.
+- Failure: the pinned image exited because the template used obsolete `--no-top`; the container restarted seven times before detection.
+- Debug/fix: compared the image's `--help` output, stopped only `/opt/embykeeper` Compose, removed `--no-top` from both tracked Compose examples, and added a CLI-flag regression row to `TEST_MATRIX.md`.
+- Result: corrected deployment is ready to re-run; no account login, Telegram session, DNS, failover, Nginx, helper, or existing service action occurred.
+- Next: commit/push the template fix, refresh the isolated BWG checkout, then start the corrected stack and publish a sanitized status file.
+- External help: none; real credentials remain intentionally unavailable.
