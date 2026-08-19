@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+status_file=${1:-/var/lib/embykeeper-status/status.json}
+max_age_seconds=${EMBYKEEPER_STATUS_MAX_AGE_SECONDS:-172800}
+
+python3 - "$status_file" "$max_age_seconds" <<'PY'
+import json
+import os
+import stat
+import sys
+import time
+
+path = sys.argv[1]
+max_age = int(sys.argv[2])
+info = os.lstat(path)
+if stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode):
+    raise SystemExit("unsafe status file")
+if info.st_size > 65536:
+    raise SystemExit("status file exceeds 64 KiB")
+if time.time() - info.st_mtime > max_age:
+    raise SystemExit("status file is stale")
+with open(path, "r", encoding="utf-8") as handle:
+    value = json.load(handle)
+expected = {
+    "last_success", "next_run", "last_error",
+    "enabled_profiles_count", "failed_profiles_count",
+}
+if set(value) != expected:
+    raise SystemExit("unexpected status schema")
+if not isinstance(value["enabled_profiles_count"], int) or not isinstance(value["failed_profiles_count"], int):
+    raise SystemExit("invalid profile counters")
+print("embykeeper_status_ok")
+PY

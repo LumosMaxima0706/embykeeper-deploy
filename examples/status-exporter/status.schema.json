@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["last_success", "next_run", "last_error", "enabled_profiles_count", "failed_profiles_count"],
+  "properties": {
+    "last_success": {"type": "string"},
+    "next_run": {"type": "string"},
+    "last_error": {"type": "string", "pattern": "^[A-Z0-9_.:-]*$"},
+    "enabled_profiles_count": {"type": "integer", "minimum": 0},
+    "failed_profiles_count": {"type": "integer", "minimum": 0}
+  }
+}
