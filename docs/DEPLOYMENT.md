@@ -30,6 +30,29 @@ empty task queue completes. The command intentionally avoids flags that are
 not present in every pinned upstream image release. Starting a container is an
 owner-approved isolated trial, not part of repository tests.
 
+## Runtime commands
+
+From `/opt/embykeeper`:
+
+```bash
+docker compose up -d
+docker compose ps
+docker compose logs --tail=100 embykeeper
+docker compose restart embykeeper
+docker compose stop embykeeper
+```
+
+Validate before and after a change:
+
+```bash
+docker compose config --quiet
+bash /path/to/healthcheck.example.sh /opt/embykeeper/status/status.json
+```
+
+The Compose service uses `restart: unless-stopped`, so Docker starts it after
+host boot when the Docker daemon is enabled. This is not a systemd unit; do
+not install both supervisors for the same instance.
+
 ## systemd alternative
 
 Use `deploy/systemd/embykeeper.service.example` with a dedicated unprivileged

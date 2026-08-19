@@ -39,3 +39,13 @@
 - Result: corrected deployment is ready to re-run; no account login, Telegram session, DNS, failover, Nginx, helper, or existing service action occurred.
 - Next: commit/push the template fix, refresh the isolated BWG checkout, then start the corrected stack and publish a sanitized status file.
 - External help: none; real credentials remain intentionally unavailable.
+
+### 2026-08-19 - BWG corrected runtime and status contract
+
+- Goal: keep the disabled standalone service running and expose only a sanitized status artifact.
+- Actions: pushed deployment fixes through `embykeeper-deploy` `main` commit `40359e2`; refreshed the BWG `/tmp` checkout; started `/opt/embykeeper` Compose; generated `/opt/embykeeper/status/status.json` with the atomic exporter; ran the repository healthcheck.
+- Result: `embykeeper/embykeeper:v7.6.1` is `running` with restart count 0, no published ports, no host networking, and no enabled account. Status JSON has exactly five fields and reports `NO_ENABLED_PROFILES` with zero enabled/failed profiles.
+- Debug: the first status command used a shell quoting form that was rejected locally; the corrected command ran successfully. The status file is a regular 0644 file and contains no URL or credential data.
+- Safety: only the new `/opt/embykeeper` Compose stack was started/stopped/restarted during debugging. Existing EmbyProxy, Nginx, sidecar, publication-agent, DNS, and failover state were not changed.
+- Next: validate EmbyProxy Admin/config behavior against missing, malformed, and valid status files in the isolated Linux clone; do not mount the status directory into the production EmbyProxy container without a separate rollout decision.
+- External help: real Emby credentials remain required for an actual account keepalive result; no credentials are requested or stored by this delivery.

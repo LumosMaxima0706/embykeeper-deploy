@@ -5,6 +5,11 @@
 Inspect only the standalone service logs and sanitized status file. Treat a
 running container as process health, not proof that a profile succeeded.
 
+For the isolated Compose deployment, use `docker compose ps` and
+`docker compose logs --tail=100 embykeeper`. A healthy no-account baseline
+reports that no Emby keepalive task is enabled; it must not be reported as a
+successful account login.
+
 ## Updates
 
 Review upstream release notes and digest, back up only standalone config/data,
