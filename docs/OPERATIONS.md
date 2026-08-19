@@ -16,6 +16,11 @@ Review upstream release notes and digest, back up only standalone config/data,
 validate the candidate in isolation, then retain the previous image/digest for
 rollback. Do not use unattended image update tooling in the baseline.
 
+If the server returns 404 for the optional `AdditionalParts` endpoint, use the
+documented pinned compatibility build rather than changing the upstream image
+in place. Re-run the one-shot validation and inspect only redacted summaries
+before replacing the long-running service image.
+
 ## Status contract
 
 Write `status.json` atomically with:

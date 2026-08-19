@@ -15,3 +15,8 @@ the unpushed local clone. Do not revert or modify EmbyProxy history.
 Do not touch EmbyProxy SQLite, Nginx fragments, edge helper, publication-agent,
 DNS, or failover state. `deploy/scripts/rollback.example.sh` prints this plan
 and is dry-run by default.
+
+For the v7.6.1 compatibility image, remove the server-side
+`EMBYKEEPER_IMAGE` override and recreate only the Embykeeper Compose service to
+return to the pinned official image. Retain the protected config/data backup;
+do not change any EmbyProxy or edge service.

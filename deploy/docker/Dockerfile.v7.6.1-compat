@@ -1,0 +1,9 @@
+ARG UPSTREAM_IMAGE=embykeeper/embykeeper@sha256:8ec9eb3bbccfe6ae39309537f6e6c27ea3ffa67fdf1523cd419d8cf4077c9b10
+FROM ${UPSTREAM_IMAGE}
+
+COPY deploy/patches/apply-v7.6.1-compat.py /tmp/apply-v7.6.1-compat.py
+RUN python /tmp/apply-v7.6.1-compat.py \
+    && rm -f /tmp/apply-v7.6.1-compat.py
+
+LABEL org.opencontainers.image.base.name="docker.io/embykeeper/embykeeper:v7.6.1" \
+      org.opencontainers.image.description="Embykeeper v7.6.1 compatibility and log-redaction patch"

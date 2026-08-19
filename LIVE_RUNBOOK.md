@@ -49,3 +49,15 @@
 - Safety: only the new `/opt/embykeeper` Compose stack was started/stopped/restarted during debugging. Existing EmbyProxy, Nginx, sidecar, publication-agent, DNS, and failover state were not changed.
 - Next: validate EmbyProxy Admin/config behavior against missing, malformed, and valid status files in the isolated Linux clone; do not mount the status directory into the production EmbyProxy container without a separate rollout decision.
 - External help: real Emby credentials remain required for an actual account keepalive result; no credentials are requested or stored by this delivery.
+
+### 2026-08-19 - Real credential verification and compatibility image
+
+- Goal: run one low-risk real Emby keepalive without Telegram or production EmbyProxy changes.
+- Precheck: `/opt/embykeeper/secrets/config.toml` mode 0600, owned by UID/GID 1000; one enabled profile; required fields present; no placeholder values; Telegram not required. Values were never printed.
+- Official image result: login succeeded and 192 home items were read, but the server returned HTTP 404 for the optional `Videos/{id}/AdditionalParts` probe. v7.6.1 then hit its uninitialized `streams` cleanup variable. Status was recorded as `PLAYBACK_ENDPOINT_HTTP_404`.
+- Fix: built a derived image from the pinned official v7.6.1 digest. The fail-closed patch removes only the unused `AdditionalParts` probe, initializes `streams`, and redacts URL-bearing request errors. Exact source markers are checked during build; mismatched upstream source fails the build.
+- Verification: compat2 one-shot `--emby --disable-color --instant --once` exited 0. Login succeeded, one video completed approximately 150 seconds, and Embykeeper reported keepalive success. Raw log scan found zero password/token matches; URL errors contained `[URL_REDACTED]` only.
+- Runtime: `/opt/embykeeper/docker-compose.yml` now selects `local/embykeeper:v7.6.1-additionalparts-compat2`; container is running with restart count 0. `/opt/embykeeper/status/status.json` reports one enabled profile, zero failures, and a real `last_success` timestamp.
+- Cleanup: all temporary validation raw logs, including the earlier token-bearing official-image log, were deleted. No config, cache, or account data was removed.
+- Safety: only the standalone Embykeeper container was restarted. Existing EmbyProxy, Nginx, sidecar, publication-agent, DNS, and failover state were not changed.
+- External help: none for the completed verification; future account changes remain operator-controlled.
