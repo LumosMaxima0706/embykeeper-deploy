@@ -24,6 +24,20 @@ Write `status.json` atomically with:
 Counts are non-negative; failed cannot exceed enabled. Unknown fields and raw
 error text are invalid.
 
+The example exporter prints JSON by default. To atomically replace a status
+file, pass an absolute output path:
+
+```bash
+STATUS_LAST_ERROR=NO_ENABLED_PROFILES \
+STATUS_ENABLED_PROFILES_COUNT=0 \
+STATUS_FAILED_PROFILES_COUNT=0 \
+bash examples/status-exporter/status-exporter.example.sh \
+  /opt/embykeeper/status/status.json
+```
+
+The destination directory must already exist. The exporter never reads
+`config.toml`, `cache.json`, sessions, or raw logs.
+
 ## Removal
 
 Disable the EmbyProxy link, stop/remove only the standalone unit/container, then

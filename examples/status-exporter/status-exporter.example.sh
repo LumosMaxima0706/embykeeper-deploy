@@ -26,5 +26,29 @@ if (( failed > enabled )); then
   printf 'failed count exceeds enabled count\n' >&2
   exit 2
 fi
-printf '{"last_success":"%s","next_run":"%s","last_error":"%s","enabled_profiles_count":%s,"failed_profiles_count":%s}\n' \
-  "$last_success" "$next_run" "$last_error" "$enabled" "$failed"
+payload=$(printf '{"last_success":"%s","next_run":"%s","last_error":"%s","enabled_profiles_count":%s,"failed_profiles_count":%s}\n' \
+  "$last_success" "$next_run" "$last_error" "$enabled" "$failed")
+if (( $# == 0 )); then
+  printf '%s' "$payload"
+  exit 0
+fi
+if (( $# != 1 )); then
+  printf 'usage: %s [absolute-status-path]\n' "$0" >&2
+  exit 2
+fi
+output=$1
+case "$output" in
+  /*) ;;
+  *) printf 'status path must be absolute\n' >&2; exit 2 ;;
+esac
+output_dir=${output%/*}
+if [[ ! -d "$output_dir" ]]; then
+  printf 'status directory does not exist\n' >&2
+  exit 2
+fi
+tmp=$(mktemp "$output_dir/.status.json.XXXXXX")
+trap 'rm -f "$tmp"' EXIT
+printf '%s' "$payload" > "$tmp"
+chmod 0644 "$tmp"
+mv -f "$tmp" "$output"
+trap - EXIT

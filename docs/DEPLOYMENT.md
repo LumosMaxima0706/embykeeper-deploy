@@ -41,3 +41,7 @@ dedicated virtualenv. Run `systemd-analyze verify` before any enable/start.
 Only configure EmbyProxy with an HTTPS external URL and an absolute sanitized
 `status.json` path. EmbyProxy never reads the standalone config, cache, logs, or
 session. New EmbyProxy servers are not automatically enrolled.
+
+When weak integration is intentionally enabled, expose only the `status/`
+directory to the EmbyProxy process and set `EMBYKEEPER_STATUS_FILE` to the
+absolute `status.json` path. Do not mount `secrets/` or `data/` into EmbyProxy.

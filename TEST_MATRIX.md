@@ -6,6 +6,7 @@
 | Compose | `docker compose -f docker-compose.example.yml config --quiet` and deploy copy | Exit 0, no start | Both exit 0; no `up` executed | Pass |
 | Image CLI | `docker run --rm embykeeper/embykeeper:v7.6.1 --help` and rendered command review | Every configured flag accepted by pinned image | Initial `--no-top` failed; removed; `--help` confirms `--emby`, `--disable-color`, and `--noexit` | Pass |
 | Runtime hold | Compose with disabled profile and `--noexit` | Container remains running without login | Pending corrected BWG run | Pending |
+| Status writer | Exporter with absolute output path | Atomic five-field status file and healthcheck pass | Pending corrected BWG run | Pending |
 | Python | `python3 -m py_compile` for exporter | Exit 0 | Exit 0 | Pass |
 | JSON | Parse `examples/status.example.json` | Valid object | Parsed with Python standard library | Pass |
 | Schema | Load schema; enforce required/additional/type/minimum/pattern rules | Five exact fields | Pass; third-party `jsonschema` unavailable, equivalent standard-library assertions used | Pass |
