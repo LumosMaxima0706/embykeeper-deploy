@@ -35,6 +35,7 @@
 - Actions: pulled `embykeeper/embykeeper:v7.6.1` (digest recorded only in the host audit), rendered the Compose file, and started the dedicated stack with the disabled placeholder profile.
 - Failure: the pinned image exited because the template used obsolete `--no-top`; the container restarted seven times before detection.
 - Debug/fix: compared the image's `--help` output, stopped only `/opt/embykeeper` Compose, removed `--no-top` from both tracked Compose examples, and added a CLI-flag regression row to `TEST_MATRIX.md`.
+- Follow-up: after permissions were corrected, v7.6.1 exited 0 because the disabled queue was empty. Added supported `--noexit` so the service remains available for health checks without enabling any profile.
 - Result: corrected deployment is ready to re-run; no account login, Telegram session, DNS, failover, Nginx, helper, or existing service action occurred.
 - Next: commit/push the template fix, refresh the isolated BWG checkout, then start the corrected stack and publish a sanitized status file.
 - External help: none; real credentials remain intentionally unavailable.

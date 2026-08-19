@@ -14,4 +14,9 @@ if [[ "${EMBYKEEPER_INSTALL_APPLY:-0}" != 1 ]]; then
   exit 0
 fi
 install -d -m 0700 "$root/secrets" "$root/data" "$root/status"
+chown 1000:1000 "$root/data" "$root/status"
+if [[ -f "$root/secrets/config.toml" ]]; then
+  chown 1000:1000 "$root/secrets/config.toml"
+  chmod 0600 "$root/secrets/config.toml"
+fi
 printf 'prepared %s; no credentials were created or copied\n' "$root"

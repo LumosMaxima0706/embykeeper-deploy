@@ -15,14 +15,18 @@ Use a dedicated account and directory:
 
 Copy `docker-compose.example.yml` to the runtime directory only after review.
 Copy `config.example.toml` to the untracked secrets/config location and keep
-the profile disabled. Review the upstream image tag and digest. Validate with:
+the profile disabled. The Compose UID is `1000:1000`; ensure the mounted data
+directory and config file are readable by that UID (the install example applies
+the ownership when present). Review the upstream image tag and digest. Validate with:
 
 ```bash
 docker compose -f docker-compose.example.yml config
 ```
 
-The baseline uses `--emby` and `--disable-color`, no host network, no published
-port, and no Docker socket. The command intentionally avoids flags that are
+The baseline uses `--emby`, `--disable-color`, and `--noexit`, no host network,
+no published port, and no Docker socket. `--noexit` keeps a disabled/no-account
+instance available for health checks instead of exiting successfully after its
+empty task queue completes. The command intentionally avoids flags that are
 not present in every pinned upstream image release. Starting a container is an
 owner-approved isolated trial, not part of repository tests.
 

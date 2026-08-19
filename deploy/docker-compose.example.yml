@@ -8,6 +8,7 @@ services:
       - /run/embykeeper-secrets/config.toml
       - --emby
       - --disable-color
+      - --noexit
     volumes:
       - ./secrets/config.toml:/run/embykeeper-secrets/config.toml:ro
       - ./data:/app

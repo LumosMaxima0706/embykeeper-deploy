@@ -9,7 +9,7 @@ User=embykeeper
 Group=embykeeper
 Environment=HOME=/var/lib/embykeeper
 WorkingDirectory=/var/lib/embykeeper
-ExecStart=/opt/embykeeper-venv/bin/embykeeper /etc/embykeeper/config.toml --emby --no-top --disable-color --basedir /var/lib/embykeeper
+ExecStart=/opt/embykeeper-venv/bin/embykeeper /etc/embykeeper/config.toml --emby --disable-color --noexit --basedir /var/lib/embykeeper
 Restart=on-failure
 RestartSec=15s
 UMask=0077
